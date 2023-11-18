@@ -1,0 +1,15 @@
+[package]
+name = "pattern-reverse-proxy"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+axum = "*"
+axum-server = { version = "*", features = ["tls-rustls"] }
+futures = "*"
+hyper = { version = "*", features = ["full"] }
+rcgen = "*"
+tokio = { version = "*", features = ["full"] }
+tower = "*"
+tower-http = { version = "*", features = ["compression-full"] }
+
