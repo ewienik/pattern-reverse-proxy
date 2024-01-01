@@ -8,6 +8,7 @@ axum = "*"
 axum-server = { version = "*", features = ["tls-rustls"] }
 futures = "*"
 hyper = { version = "*", features = ["full"] }
+hyper-util = { version = "*", features = ["full"] }
 rcgen = "*"
 tokio = { version = "*", features = ["full"] }
 tower = "*"

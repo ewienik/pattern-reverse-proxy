@@ -1,6 +1,6 @@
 use {
     axum::{
-        body::{Body, StreamBody},
+        body::Body,
         extract::State,
         http::{uri::Uri, Request},
         response::{IntoResponse, Response},
@@ -9,19 +9,21 @@ use {
     },
     axum_server::tls_rustls::RustlsConfig,
     futures::stream,
-    hyper::{client::HttpConnector, StatusCode},
+    hyper::StatusCode,
+    hyper_util::{client::legacy::connect::HttpConnector, rt::TokioExecutor},
     std::convert::Infallible,
     tower::ServiceBuilder,
     tower_http::compression::CompressionLayer,
 };
 
-type Client = hyper::Client<HttpConnector, Body>;
+type Client = hyper_util::client::legacy::Client<HttpConnector, Body>;
 
 #[tokio::main]
 async fn main() {
     tokio::spawn(server());
 
-    let client: Client = hyper::Client::builder().build(HttpConnector::new());
+    let client: Client = hyper_util::client::legacy::Client::builder(TokioExecutor::new())
+        .build(HttpConnector::new());
 
     let app = Router::new()
         .route("/", get(handler))
@@ -85,7 +87,7 @@ async fn server() {
     let app = Router::new().route(
         "/",
         get(|| async {
-            StreamBody::new(stream::repeat(Ok::<_, Infallible>(
+            Body::from_stream(stream::repeat(Ok::<String, Infallible>(
                 "Hello, world!\n".to_string(),
             )))
         }),
